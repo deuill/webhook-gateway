@@ -1,0 +1,10 @@
+.env
+*.html
+new.txt
+old.txt
+*.out
+styling_tests.json
+*.svg
+*.test
+vendor/
+*.xml
