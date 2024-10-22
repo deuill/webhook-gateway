@@ -17,7 +17,7 @@ Installing `webhook-gateway` locally requires that you have Go installed, at a m
 simply run the following command:
 
 ```sh
-go install go.deuill.org/webhook-gateway@latest
+go install go.deuill.org/webhook-gateway/cmd/webhook-gateway@latest
 ```
 
 The `webhook-gateway` binary should be placed in your `$GOBIN` path.
