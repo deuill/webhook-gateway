@@ -25,8 +25,8 @@ The `webhook-gateway` binary should be placed in your `$GOBIN` path.
 ## Configuration
 
 Configuration is made entirely via a single TOML file, a full example of which can be found
-[here](gateway.conf). In general, providing a configuration file is mandatory as options don't
-(generally) have defaults set; only a number of options are required, though. The following
+[here](config.example.toml). In general, providing a configuration file is mandatory as options
+don't (generally) have defaults set; only a number of options are required, though. The following
 sections are available:
 
 ### `http`

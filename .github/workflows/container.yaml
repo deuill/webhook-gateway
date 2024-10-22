@@ -1,0 +1,40 @@
+name: WebHook Gateway Container Build
+on:
+  push:
+    branches:
+      - trunk
+  pull_request:
+    branches:
+      - trunk
+env:
+  CONTAINER_NAME: ${{ github.repository_owner }}/webhook-gateway
+  CONTAINER_TAG: latest
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Container Build
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y podman buildah
+      - name: Build container image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.CONTAINER_NAME }}
+          tags: ${{ env.CONTAINER_TAG }}
+          containerfiles: Containerfile
+      - name: Push to container registry
+        id: push-to-registry
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          registry: ${{ vars.CONTAINER_REGISTRY_URL }}
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          username: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
+          password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
+      - name: Print container image URL
+        run: echo "Image pushed to ${{ steps.push-to-registry.outputs.registry-paths }}"

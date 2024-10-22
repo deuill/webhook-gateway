@@ -20,7 +20,7 @@ import (
 
 // Global configuration.
 var (
-	configPath = flag.String("config", "gateway.conf", "Path to main configuration file, in TOML format.")
+	configPath = flag.String("config", "config.toml", "Path to main configuration file, in TOML format.")
 	logLevel   = flag.String("log-level", "info", "The minimum log level to process logs under")
 )
 
