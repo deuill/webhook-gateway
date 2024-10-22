@@ -175,38 +175,38 @@ func (g *Gateway) UnmarshalTOML(data any) error {
 
 	// Parse source and destination configuration.
 	if v, ok := conf["source"].(map[string]any); ok {
-		if n, ok := v["type"].(string); !ok || n == "" {
+		name, ok := v["type"].(string)
+		if !ok || name == "" {
 			return fmt.Errorf("empty or missing source type in gateway configuration")
-		} else if _, ok = knownSources[n]; !ok {
-			return fmt.Errorf("unknown source type '%s' given in gateway configuration", n)
-		} else {
-			src := knownSources[n]()
-			if m, ok := src.(tomlUnmarshaler); ok {
-				if v, ok = v[n].(map[string]any); ok {
-					if err := m.UnmarshalTOML(v); err != nil {
-						return fmt.Errorf("failed parsing configuration for source '%s': %w", n, err)
-					}
+		} else if _, ok = knownSources[name]; !ok {
+			return fmt.Errorf("unknown source type '%s' given in gateway configuration", name)
+		}
+
+		g.source = knownSources[name]()
+		if m, ok := g.source.(tomlUnmarshaler); ok {
+			if v, ok = v[name].(map[string]any); ok {
+				if err := m.UnmarshalTOML(v); err != nil {
+					return fmt.Errorf("failed parsing configuration for source '%s': %w", name, err)
 				}
 			}
-			g.source = src
 		}
 	}
 
 	if v, ok := conf["destination"].(map[string]any); ok {
-		if n, ok := v["type"].(string); !ok || n == "" {
+		name, ok := v["type"].(string)
+		if !ok || name == "" {
 			return fmt.Errorf("empty or missing destination type in gateway configuration")
-		} else if _, ok = knownDestinations[n]; !ok {
-			return fmt.Errorf("unknown destination type '%s' given in gateway configuration", n)
-		} else {
-			dest := knownDestinations[n]()
-			if m, ok := dest.(tomlUnmarshaler); ok {
-				if v, ok = v[n].(map[string]any); ok {
-					if err := m.UnmarshalTOML(v); err != nil {
-						return fmt.Errorf("failed parsing configuration for destination '%s': %w", n, err)
-					}
+		} else if _, ok = knownDestinations[name]; !ok {
+			return fmt.Errorf("unknown destination type '%s' given in gateway configuration", name)
+		}
+
+		g.destination = knownDestinations[name]()
+		if m, ok := g.destination.(tomlUnmarshaler); ok {
+			if v, ok = v[name].(map[string]any); ok {
+				if err := m.UnmarshalTOML(v); err != nil {
+					return fmt.Errorf("failed parsing configuration for destination '%s': %w", name, err)
 				}
 			}
-			g.destination = dest
 		}
 	}
 

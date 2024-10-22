@@ -1,4 +1,4 @@
-package cloudflare_notifications
+package cloudflarenotifications
 
 import (
 	// Standard library.

@@ -1,4 +1,4 @@
-package cloudflare_notifications
+package cloudflarenotifications
 
 import (
 	// Standard library.
@@ -46,7 +46,7 @@ func TestNotificationsParseTemplate(t *testing.T) {
 			err: errors.New("invalid authentication token"),
 		},
 		{
-			descr:  "authorization success",
+			descr:  "authentication success",
 			source: &Notifications{},
 			request: func() *http.Request {
 				req := httptest.NewRequestWithContext(
@@ -59,7 +59,7 @@ func TestNotificationsParseTemplate(t *testing.T) {
 			err: errors.New("failed parsing request: unexpected end of JSON input"),
 		},
 		{
-			descr:  "authorization passthrough without secret",
+			descr:  "authentication passthrough without secret",
 			source: &Notifications{},
 			request: func() *http.Request {
 				req := httptest.NewRequest("POST", "/test", nil)

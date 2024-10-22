@@ -1,0 +1,22 @@
+name: Webhook-Gateway Test
+on:
+  push:
+    branches:
+      - trunk
+  pull_request:
+    branches:
+      - trunk
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Go unit tests
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Run tests
+        run: |
+          go test -vet=all -v ./...

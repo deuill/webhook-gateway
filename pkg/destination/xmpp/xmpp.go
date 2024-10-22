@@ -62,7 +62,7 @@ func (x *XMPP) PushMessages(ctx context.Context, messages ...*gateway.Message) e
 				Body:    msg.Content,
 			}
 
-				// TODO: Log rather than return error here.
+			// TODO: Log rather than return error here.
 			if err := x.session.Encode(ctx, m); err != nil {
 				return err
 			}
@@ -84,7 +84,7 @@ func (x *XMPP) Init(ctx context.Context) error {
 	// Initialze connection according to configuration.
 	var tlsConfig = &tls.Config{
 		ServerName:         x.clientJID.Domain().String(),
-		InsecureSkipVerify: x.noVerifyTLS,
+		InsecureSkipVerify: x.noVerifyTLS, //nolint:gosec // This is required for local development.
 	}
 
 	var dialer = &dial.Dialer{NoTLS: x.noTLS}

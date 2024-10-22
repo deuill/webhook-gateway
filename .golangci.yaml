@@ -1,0 +1,19 @@
+# Configuration for GolangCI-Lint runs.
+run:
+  tests: false # Do not include test files.
+linters:
+  enable:
+    - godox
+    - gofmt
+    - gosec
+    - govet
+    - nilerr
+    - revive
+    - unparam
+issues:
+  include:
+    - EXC0012 # Return errors for missing comments in packages and public identifiers.
+  exclude-rules:
+    - text: "Line contains TODO/BUG/FIXME.+"
+      linters:
+        - godox
