@@ -1,0 +1,8 @@
+# Generic junk files.
+.DS_Store
+.idea
+*.log
+tmp/
+
+# Local configuration.
+config.toml

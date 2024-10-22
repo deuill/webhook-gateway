@@ -80,6 +80,11 @@ func (s *Service) Init(ctx context.Context) error {
 		return fmt.Errorf("no gateway configuration found")
 	}
 
+	// Set up request handlers.
+	if err := s.handler.Handle(s.handleHealth()); err != nil {
+		return fmt.Errorf("failed setting up request handler for health-checks: %w", err)
+	}
+
 	for _, g := range s.gateway {
 		if err := g.Init(ctx); err != nil {
 			return fmt.Errorf("failed initializing gateway: %w", err)
@@ -135,4 +140,11 @@ func (s *Service) UnmarshalTOML(data any) error {
 	}
 
 	return nil
+}
+
+// HandleHealth is an HTTP handler for health-checks.
+func (s *Service) handleHealth() (string, http.HandlerFunc) {
+	return "/_health", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}
 }
