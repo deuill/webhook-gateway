@@ -23,8 +23,8 @@ not required that this is set, but few XMPP servers will allow for connections w
 authentication.
 
 The `recipients` option defines a space-separated list of user or MUC JIDs to distribute messages
-to; MUC JIDs in particular can have a resource part set, which helps differentiate between different
-gateways on the same service. It is required that this option contains at least one valid JID.
+to; MUC JIDs in particular *must* have a resource part set, which is interpreted as the nick to use
+for the room. It is required that this option contains at least one valid JID.
 
 The `no-tls` option disables TLS and attempts to connect via a plain-text socket, if set to `true`.
 Noted that most XMPP servers will not allow clients to authenticate if encryption is completely

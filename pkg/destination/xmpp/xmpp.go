@@ -57,8 +57,15 @@ type XMPP struct {
 func (x *XMPP) PushMessages(ctx context.Context, messages ...*gateway.Message) error {
 	for _, msg := range messages {
 		for _, jid := range x.recipientJIDs {
-			m := Message{
-				Message: stanza.Message{To: jid},
+			// Determine whether this is a direct or group-chat message from the resource part of
+			// the JID, which is only set if the message was destined for a group-chat.
+			var kind = stanza.ChatMessage
+			if jid.Resourcepart() != "" {
+				jid, kind = jid.Bare(), stanza.GroupChatMessage
+			}
+
+			var m = Message{
+				Message: stanza.Message{To: jid, Type: kind},
 				Body:    msg.Content,
 			}
 
@@ -117,6 +124,14 @@ func (x *XMPP) Init(ctx context.Context) error {
 	err = x.session.Send(ctx, stanza.Presence{Type: stanza.AvailablePresence}.Wrap(nil))
 	if err != nil {
 		return fmt.Errorf("setting initial XMPP presence failed: %w", err)
+	}
+
+	// Send available presences to recipients.
+	for _, jid := range x.recipientJIDs {
+		err = x.session.Send(ctx, stanza.Presence{Type: stanza.AvailablePresence, To: jid}.Wrap(nil))
+		if err != nil {
+			return fmt.Errorf("sending XMPP presence to %s failed: %w", jid, err)
+		}
 	}
 
 	return nil
