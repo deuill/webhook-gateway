@@ -142,10 +142,14 @@ func (g *Gateway) HandleHTTP() (string, http.HandlerFunc) {
 	h := func(w http.ResponseWriter, r *http.Request) {
 		r = r.WithContext(SetSecret(r.Context(), g.secret))
 		if msg, err := g.source.ParseHTTP(r); err != nil || len(msg) == 0 {
-			http.Error(w, fmt.Sprintf("failed processing incoming request: %s", err), http.StatusBadRequest)
+			msg := fmt.Sprintf("failed processing incoming request: %s", err)
+			http.Error(w, msg, http.StatusBadRequest)
+			g.logger.Debug(msg)
 			return
 		} else if err = g.destination.PushMessages(r.Context(), msg...); err != nil {
-			http.Error(w, fmt.Sprintf("failed pushing notification messages: %s", err), http.StatusBadRequest)
+			msg := fmt.Sprintf("failed pushing notification messages: %s", err)
+			http.Error(w, msg, http.StatusBadRequest)
+			g.logger.Debug(msg)
 			return
 		}
 	}
