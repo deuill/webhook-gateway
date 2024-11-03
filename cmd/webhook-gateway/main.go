@@ -10,6 +10,7 @@ import (
 
 	// Internal packages.
 	_ "go.deuill.org/webhook-gateway/pkg/destination/xmpp"
+	_ "go.deuill.org/webhook-gateway/pkg/destination/irc"
 	"go.deuill.org/webhook-gateway/pkg/service"
 	_ "go.deuill.org/webhook-gateway/pkg/source/cloudflare-notifications"
 	_ "go.deuill.org/webhook-gateway/pkg/source/grafana"

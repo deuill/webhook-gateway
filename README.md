@@ -9,7 +9,7 @@ Currently, the following sources are supported:
   - [Grafana AlertManager][grafana-alertmanager]
   - [Cloudflare Notifications][cloudflare-notifications]
 
-The only currently supported destination is [XMPP][xmpp].
+The currently supported destinations include[XMPP][xmpp] and [IRC][irc].
 
 ## Building and Installing
 
@@ -132,3 +132,4 @@ All code in this repository is covered by the terms of the MIT License, the full
 [grafana-alertmanager]: https://grafana.com/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/webhook-notifier/
 [cloudflare-notifications]: https://developers.cloudflare.com/notifications/get-started/configure-webhooks/
 [xmpp]: https://xmpp.org
+[irc]: https://ircv3.net
