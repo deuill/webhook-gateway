@@ -2,6 +2,10 @@
 ## explicit; go 1.18
 github.com/BurntSushi/toml
 github.com/BurntSushi/toml/internal
+# github.com/lrstanley/girc v0.0.0-20240914071631-5c0cc76257bf
+## explicit; go 1.18
+github.com/lrstanley/girc
+github.com/lrstanley/girc/internal/ctxgroup
 # golang.org/x/crypto v0.27.0
 ## explicit; go 1.20
 golang.org/x/crypto/pbkdf2

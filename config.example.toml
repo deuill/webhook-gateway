@@ -18,9 +18,9 @@ recipients = "foobar@example.com"
 secret = "hello-world"
 path = "POST /cloudflare-alerts"
 source.type = "cloudflare-notifications"
-destination.type = "xmpp"
+destination.type = "irc"
 
-[gateway.destination.xmpp]
-jid = "test@example.com"
-password = "password"
-recipients = "some-muc@chat.example.com/cloudflare-alerts"
+[gateway.destination.irc]
+server = "irc.example.com"
+nick = "webhook-gateway-example"
+channels = "#alerts-channel some-nickname"
