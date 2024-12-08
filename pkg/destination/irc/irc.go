@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	"log/slog"
 	"strings"
 	"time"
 
@@ -39,6 +40,7 @@ type IRC struct {
 
 	// Internal fields.
 	client *girc.Client
+	logger *slog.Logger
 }
 
 // PushMessages writes the given messages to the destination users and channels configured for the
@@ -124,8 +126,8 @@ func (r *IRC) Init(ctx context.Context) error {
 		}
 
 		for {
-			// TODO: Log reconnection errors here.
 			if err := r.client.Connect(); err != nil {
+				r.logger.Error("Connection to IRC server failed, reconnecting...", "error", err)
 				time.Sleep(defaultReconnectDelay)
 			} else {
 				return
@@ -134,6 +136,12 @@ func (r *IRC) Init(ctx context.Context) error {
 	}()
 
 	return <-wait
+}
+
+// SetLogger has the given [slog.Logger] instance be used for all internal logging for the [IRC]
+// destination.
+func (r *IRC) SetLogger(l *slog.Logger) {
+	r.logger = l.With("destination", "irc")
 }
 
 // UnmarshalTOML configures the [IRC] destination based on values sourced from TOML configuration.
@@ -186,6 +194,6 @@ func (r *IRC) UnmarshalTOML(data any) error {
 }
 
 func init() {
-	initfn := func() gateway.Destination { return &IRC{} }
+	initfn := func() gateway.Destination { return &IRC{logger: slog.Default()} }
 	gateway.RegisterDestination("irc", initfn)
 }

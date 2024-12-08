@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	"log/slog"
 	"strings"
 
 	// Internal packages.
@@ -51,6 +52,7 @@ type XMPP struct {
 
 	// Internal fields.
 	session *xmpp.Session
+	logger  *slog.Logger
 }
 
 // PushMessages writes the given messages to the destination JID configured for the XMPP session.
@@ -69,9 +71,8 @@ func (x *XMPP) PushMessages(ctx context.Context, messages ...*gateway.Message) e
 				Body:    msg.Content,
 			}
 
-			// TODO: Log rather than return error here.
 			if err := x.session.Encode(ctx, m); err != nil {
-				return err
+				x.logger.Error("Failed to encode stanza", "error", err)
 			}
 		}
 	}
@@ -137,6 +138,12 @@ func (x *XMPP) Init(ctx context.Context) error {
 	return nil
 }
 
+// SetLogger has the given [slog.Logger] instance be used for all internal logging for the [XMPP]
+// destination.
+func (x *XMPP) SetLogger(l *slog.Logger) {
+	x.logger = l.With("destination", "xmpp")
+}
+
 // UnmarshalTOML configures the [XMPP] destination based on values sourced from TOML configuration.
 func (x *XMPP) UnmarshalTOML(data any) error {
 	conf, ok := data.(map[string]any)
@@ -182,6 +189,6 @@ func (x *XMPP) UnmarshalTOML(data any) error {
 }
 
 func init() {
-	initfn := func() gateway.Destination { return &XMPP{} }
+	initfn := func() gateway.Destination { return &XMPP{logger: slog.Default()} }
 	gateway.RegisterDestination("xmpp", initfn)
 }

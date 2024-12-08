@@ -1,4 +1,7 @@
 # Example gateway configuration file.
+[log]
+level = "info"
+
 [http]
 host = "localhost"
 port = "8080"

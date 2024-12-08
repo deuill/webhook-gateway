@@ -29,6 +29,12 @@ type Destination interface {
 	Init(context.Context) error
 }
 
+// A LoggerSetter is any type that accepts a standard [slog.Logger] instance for performing any
+// system-wide logging.
+type LoggerSetter interface {
+	SetLogger(*slog.Logger)
+}
+
 // A Gateway represents a [Source]-to-[Destination] mapping, with some additional metadata related
 // to authentication and HTTP pathing. Though most of the heavy lifting is done by downstream
 // dependencies, [Gateway] instances do, at least, require that they have a unique path and/or secret
@@ -144,12 +150,12 @@ func (g *Gateway) HandleHTTP() (string, http.HandlerFunc) {
 		if msg, err := g.source.ParseHTTP(r); err != nil || len(msg) == 0 {
 			msg := fmt.Sprintf("failed processing incoming request: %s", err)
 			http.Error(w, msg, http.StatusBadRequest)
-			g.logger.Debug(msg)
+			g.logger.Error(msg)
 			return
 		} else if err = g.destination.PushMessages(r.Context(), msg...); err != nil {
 			msg := fmt.Sprintf("failed pushing notification messages: %s", err)
 			http.Error(w, msg, http.StatusBadRequest)
-			g.logger.Debug(msg)
+			g.logger.Error(msg)
 			return
 		}
 	}
@@ -194,6 +200,9 @@ func (g *Gateway) UnmarshalTOML(data any) error {
 				}
 			}
 		}
+		if l, ok := g.source.(LoggerSetter); ok {
+			l.SetLogger(g.logger)
+		}
 	}
 
 	if v, ok := conf["destination"].(map[string]any); ok {
@@ -211,6 +220,9 @@ func (g *Gateway) UnmarshalTOML(data any) error {
 					return fmt.Errorf("failed parsing configuration for destination '%s': %w", name, err)
 				}
 			}
+		}
+		if l, ok := g.destination.(LoggerSetter); ok {
+			l.SetLogger(g.logger)
 		}
 	}
 

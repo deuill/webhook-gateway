@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"os"
 
 	// Internal packages.
 	"go.deuill.org/webhook-gateway/pkg/gateway"
@@ -97,6 +98,7 @@ func (s *Service) Init(ctx context.Context) error {
 		return fmt.Errorf("failed initializing request handler: %w", err)
 	}
 
+	s.logger.Debug("Service initialized")
 	return nil
 }
 
@@ -105,6 +107,18 @@ func (s *Service) UnmarshalTOML(data any) error {
 	conf, ok := data.(map[string]any)
 	if !ok {
 		return fmt.Errorf("no valid configuration keys found")
+	}
+
+	// Process configuration for logging.
+	if v, ok := conf["log"].(map[string]any); ok {
+		if l, ok := v["level"].(string); ok {
+			var level slog.Level
+			if err := level.UnmarshalText([]byte(l)); err != nil {
+				return fmt.Errorf("failed reading log level: %s", err)
+			}
+
+			s.logger = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: level}))
+		}
 	}
 
 	// Process configuration for HTTP server.
