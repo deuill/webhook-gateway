@@ -9,7 +9,7 @@ Currently, the following sources are supported:
   - [Grafana AlertManager][grafana-alertmanager]
   - [Cloudflare Notifications][cloudflare-notifications]
 
-The currently supported destinations include[XMPP][xmpp] and [IRC][irc].
+The currently supported destinations include [XMPP][xmpp] and [IRC][irc].
 
 ## Building and Installing
 
