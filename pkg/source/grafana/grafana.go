@@ -40,7 +40,7 @@ type Alert struct {
 	Status      string            `json:"status"`
 	Labels      map[string]string `json:"labels"`
 	Annotations map[string]string `json:"annotations"`
-	Values      map[string]string `json:"values"`
+	Values      map[string]any `json:"values"`
 	ValueString string `json:"valueString"`
 
 	StartsAt string `json:"startsAt"`

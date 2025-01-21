@@ -51,7 +51,7 @@ func TestNew(t *testing.T) {
 	}
 }
 
-func TestGrafanaParseTemplate(t *testing.T) {
+func TestGrafanaParseHTTP(t *testing.T) {
 	var testCases = []struct {
 		descr   string
 		source  *Grafana
@@ -154,17 +154,89 @@ func TestGrafanaParseTemplate(t *testing.T) {
 			request: httptest.NewRequest("POST", "/test", strings.NewReader(`{"title": "Hello", "message": "World"}`)),
 			expect:  []*gateway.Message{{Content: "Hello\nWorld"}},
 		},
+		{
+			descr:  "decode full payload",
+			source: &Grafana{},
+			request: httptest.NewRequest("POST", "/test", strings.NewReader(`{
+				"receiver": "My Super Webhook",
+				"status": "firing",
+				"orgId": 1,
+				"alerts": [
+				  {
+				    "status": "firing",
+				    "labels": {
+				      "alertname": "High memory usage",
+				      "team": "blue",
+				      "zone": "us-1"
+				    },
+				    "annotations": {
+				      "description": "The system has high memory usage",
+				      "runbook_url": "https://myrunbook.com/runbook/1234",
+				      "summary": "This alert was triggered for zone us-1"
+				    },
+				    "startsAt": "2021-10-12T09:51:03.157076+02:00",
+				    "endsAt": "0001-01-01T00:00:00Z",
+				    "generatorURL": "https://play.grafana.org/alerting/1afz29v7z/edit",
+				    "fingerprint": "c6eadffa33fcdf37",
+				    "silenceURL": "https://play.grafana.org/alerting/silence/new?alertmanager=grafana&matchers=alertname%3DT2%2Cteam%3Dblue%2Czone%3Dus-1",
+				    "dashboardURL": "",
+				    "panelURL": "",
+				    "values": {
+				      "B": 44.23943737541908,
+				      "C": 1
+				    }
+				  },
+				  {
+				    "status": "firing",
+				    "labels": {
+				      "alertname": "High CPU usage",
+				      "team": "blue",
+				      "zone": "eu-1"
+				    },
+				    "annotations": {
+				      "description": "The system has high CPU usage",
+				      "runbook_url": "https://myrunbook.com/runbook/1234",
+				      "summary": "This alert was triggered for zone eu-1"
+				    },
+				    "startsAt": "2021-10-12T09:56:03.157076+02:00",
+				    "endsAt": "0001-01-01T00:00:00Z",
+				    "generatorURL": "https://play.grafana.org/alerting/d1rdpdv7k/edit",
+				    "fingerprint": "bc97ff14869b13e3",
+				    "silenceURL": "https://play.grafana.org/alerting/silence/new?alertmanager=grafana&matchers=alertname%3DT1%2Cteam%3Dblue%2Czone%3Deu-1",
+				    "dashboardURL": "",
+				    "panelURL": "",
+				    "values": {
+				      "B": 44.23943737541908,
+				      "C": 1
+				    }
+				  }
+				],
+				"groupLabels": {},
+				"commonLabels": {
+				  "team": "blue"
+				},
+				"commonAnnotations": {},
+				"externalURL": "https://play.grafana.org/",
+				"version": "1",
+				"groupKey": "{}:{}",
+				"truncatedAlerts": 0,
+				"title": "[FIRING:2]  (blue)",
+				"state": "alerting",
+				"message": "**Firing**\n\nLabels:\n - alertname = T2\n - team = blue\n - zone = us-1\nAnnotations:\n - description = This is the alert rule checking the second system\n - runbook_url = https://myrunbook.com\n - summary = This is my summary\nSource: https://play.grafana.org/alerting/1afz29v7z/edit\nSilence: https://play.grafana.org/alerting/silence/new?alertmanager=grafana&matchers=alertname%3DT2%2Cteam%3Dblue%2Czone%3Dus-1\n\nLabels:\n - alertname = T1\n - team = blue\n - zone = eu-1\nAnnotations:\nSource: https://play.grafana.org/alerting/d1rdpdv7k/edit\nSilence: https://play.grafana.org/alerting/silence/new?alertmanager=grafana&matchers=alertname%3DT1%2Cteam%3Dblue%2Czone%3Deu-1\n"
+			}`)),
+			expect: []*gateway.Message{{Content: "[FIRING:2]  (blue)\n**Firing**\n\nLabels:\n - alertname = T2\n - team = blue\n - zone = us-1\nAnnotations:\n - description = This is the alert rule checking the second system\n - runbook_url = https://myrunbook.com\n - summary = This is my summary\nSource: https://play.grafana.org/alerting/1afz29v7z/edit\nSilence: https://play.grafana.org/alerting/silence/new?alertmanager=grafana&matchers=alertname%3DT2%2Cteam%3Dblue%2Czone%3Dus-1\n\nLabels:\n - alertname = T1\n - team = blue\n - zone = eu-1\nAnnotations:\nSource: https://play.grafana.org/alerting/d1rdpdv7k/edit\nSilence: https://play.grafana.org/alerting/silence/new?alertmanager=grafana&matchers=alertname%3DT1%2Cteam%3Dblue%2Czone%3Deu-1\n"}},
+		},
 	}
 
 	for _, tt := range testCases {
 		t.Run(tt.descr, func(t *testing.T) {
 			msg, err := tt.source.ParseHTTP(tt.request)
 			if (err != nil && tt.err == nil) || (err == nil && tt.err != nil) {
-				t.Fatalf("Grafana.ParseMessage(): want error '%v', have '%v'", tt.err, err)
+				t.Fatalf("Grafana.ParseHTTP(): want error '%v', have '%v'", tt.err, err)
 			} else if err != nil && tt.err != nil && err.Error() != tt.err.Error() {
-				t.Fatalf("Grafana.ParseMessage(): want error '%s', have '%s'", tt.err.Error(), err.Error())
+				t.Fatalf("Grafana.ParseHTTP(): want error '%s', have '%s'", tt.err.Error(), err.Error())
 			} else if !reflect.DeepEqual(msg, tt.expect) {
-				t.Fatalf("Grafana.ParseMessage(): want message '%#v', have '%#v'", tt.expect, msg)
+				t.Fatalf("Grafana.ParseHTTP(): want message '%#v', have '%#v'", tt.expect, msg)
 			}
 		})
 	}
