@@ -1,0 +1,29 @@
+name: Documentation Deploy
+on:
+  push:
+    branches:
+      - trunk
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Documentation Deploy
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Setup Python 3.x
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y sshfs
+          pip install mkdocs-material
+      - name: Mount deployment directory with SSHFS
+        run: |
+          mkdir /tmp/dist
+          echo "${{ secrets.SFTP_DEPLOY_PASSWORD }}" | sshfs "${{ vars.SFTP_DEPLOY_USERNAME }}@${{ vars.SFTP_DEPLOY_HOST }}:" /tmp/dist -o password_stdin -o StrictHostKeyChecking=accept-new
+      - name: Build site with MKDocs
+        run: |
+          mkdir -p /tmp/dist/webhook-gateway
+          mkdocs build --strict --verbose --site-dir /tmp/dist/webhook-gateway

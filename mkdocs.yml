@@ -1,0 +1,30 @@
+site_name: WebHook-Gateway Documentation
+docs_dir: doc
+repo_url: https://github.com/deuill/webhook-gateway
+theme:
+  name: material
+  font:
+    text: Inter
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: pink
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: pink
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  plugins:
+    - privacy
+nav:
+  - Introduction: README.md
+  - Sources:
+      - Grafana: source/grafana/README.md
+      - Cloudflare Notifications: source/cloudflare-notifications/README.md
+  - Destinations:
+      - XMPP: destination/xmpp/README.md
+      - IRC: destination/irc/README.md

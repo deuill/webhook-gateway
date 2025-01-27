@@ -9,7 +9,12 @@ Currently, the following sources are supported:
   - [Grafana AlertManager][grafana-alertmanager]
   - [Cloudflare Notifications][cloudflare-notifications]
 
-The currently supported destinations include [XMPP][xmpp] and [IRC][irc].
+The currently supported destinations include:
+
+- [XMPP][xmpp]
+- [IRC][irc]
+
+These can be used interchangeably and matched as needed.
 
 ## Building and Installing
 
@@ -25,7 +30,7 @@ The `webhook-gateway` binary should be placed in your `$GOBIN` path.
 ## Configuration
 
 Configuration is made entirely via a single TOML file, a full example of which can be found
-[here](config.example.toml). In general, providing a configuration file is mandatory as options
+[here][toml-config]. In general, providing a configuration file is mandatory as options
 don't (generally) have defaults set; only a number of options are required, though. The following
 sections are available:
 
@@ -129,7 +134,8 @@ Cloudflare Workers, via WASM.
 
 All code in this repository is covered by the terms of the MIT License, the full text of which can be found in the LICENSE file.
 
-[grafana-alertmanager]: https://grafana.com/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/webhook-notifier/
-[cloudflare-notifications]: https://developers.cloudflare.com/notifications/get-started/configure-webhooks/
-[xmpp]: https://xmpp.org
-[irc]: https://ircv3.net
+[grafana-alertmanager]: source/grafana/README.md
+[cloudflare-notifications]: source/cloudflare-notifications/README.md
+[xmpp]: destination/xmpp/README.md
+[irc]: destination/irc/README.md
+[toml-config]: https://github.com/deuill/webhook-gateway/blob/trunk/config.example.toml

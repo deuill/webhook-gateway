@@ -1,4 +1,4 @@
-name: Webhook-Gateway Test
+name: Test
 on:
   push:
     branches:
@@ -9,7 +9,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: Go unit tests
+    name: Go Unit Tests
     steps:
       - name: Check out repository
         uses: actions/checkout@v4

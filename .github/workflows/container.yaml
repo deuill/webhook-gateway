@@ -1,4 +1,4 @@
-name: WebHook Gateway Container Build
+name: Container Build
 on:
   push:
     branches:
