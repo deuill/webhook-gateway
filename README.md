@@ -134,8 +134,8 @@ Cloudflare Workers, via WASM.
 
 All code in this repository is covered by the terms of the MIT License, the full text of which can be found in the LICENSE file.
 
-[grafana-alertmanager]: source/grafana/README.md
-[cloudflare-notifications]: source/cloudflare-notifications/README.md
-[xmpp]: destination/xmpp/README.md
-[irc]: destination/irc/README.md
+[grafana-alertmanager]: pkg/source/grafana/README.md
+[cloudflare-notifications]: pkg/source/cloudflare-notifications/README.md
+[xmpp]: pkg/destination/xmpp/README.md
+[irc]: pkg/destination/irc/README.md
 [toml-config]: https://github.com/deuill/webhook-gateway/blob/trunk/config.example.toml

@@ -23,8 +23,8 @@ theme:
 nav:
   - Introduction: README.md
   - Sources:
-      - Grafana: source/grafana/README.md
-      - Cloudflare Notifications: source/cloudflare-notifications/README.md
+      - Grafana: pkg/source/grafana/README.md
+      - Cloudflare Notifications: pkg/source/cloudflare-notifications/README.md
   - Destinations:
-      - XMPP: destination/xmpp/README.md
-      - IRC: destination/irc/README.md
+      - XMPP: pkg/destination/xmpp/README.md
+      - IRC: pkg/destination/irc/README.md
