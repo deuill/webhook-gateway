@@ -1,0 +1,44 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: webhook-gateway
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/ingress-status: all
+spec:
+  template:
+    metadata:
+      labels:
+        run.googleapis.com/startupProbeType: Default
+    spec:
+      containerConcurrency: 10
+      timeoutSeconds: 300
+      containers:
+      - name: webhook-gateway
+        image: docker.io/deuill/webhook-gateway@latest
+        ports:
+        - name: http
+          containerPort: 8080
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+        volumeMounts:
+        - name: container-config
+          mountPath: /var/lib/webhook-gateway
+        startupProbe:
+          timeoutSeconds: 240
+          periodSeconds: 240
+          failureThreshold: 1
+          tcpSocket:
+            port: 8080
+      volumes:
+      - name: container-config
+        secret:
+          secretName: webhook-gateway-config
+          items:
+          - key: latest
+            path: config.toml
+  traffic:
+  - percent: 100
+    latestRevision: true

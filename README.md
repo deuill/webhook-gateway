@@ -22,10 +22,46 @@ Installing `webhook-gateway` locally requires that you have Go installed, at a m
 simply run the following command:
 
 ```sh
-go install go.deuill.org/webhook-gateway/cmd/webhook-gateway@latest
+$ go install go.deuill.org/webhook-gateway/cmd/webhook-gateway@latest
 ```
 
 The `webhook-gateway` binary should be placed in your `$GOBIN` path.
+
+## Deployment
+
+### Containers
+
+Local deployments can be made by manually building the `webhook-gateway` binary with a
+locally installed Go toolchain; in most cases, you'll likely want to use the pre-built container
+images with Podman or Docker.
+
+Doing so requires that you first create a valid `config.toml` configuration file, which you can copy
+over from the `config.example.toml` template, and mounting it into
+`/var/lib/webhook-gateway/config.toml`:
+
+```sh
+$ cp config.example.toml config.toml # Probably need to edit the file as well.
+$ docker run --rm -v ./config.toml:/var/lib/webhook-gateway/config.toml docker.io/deuill/webhook-gateway:latest
+```
+
+### Google Cloud
+
+Google Cloud Run provides a platform for running arbitrary containers with a generous [free
+tier][gcloud-run-free-tier]; assuming you've already set up your Google Cloud account and have the
+`gcloud` command-line tools installed locally, you can deploy into Google Cloud Run via service
+definitions shipped here. First, set up a secret containing your entire `config.toml` file:
+
+```sh
+$ gcloud secrets create webhook-gateway-config --data-file=config.toml
+```
+
+Then, create the service from the included `gcloud-service.yaml` file:
+
+```sh
+$ gcloud run services replace gcloud-service.yaml --region=europe-west1
+```
+
+This should return an un-authenticated URL you can use from within your event sources as-is.
 
 ## Configuration
 
@@ -119,16 +155,6 @@ password = "foobar"
 These sections define source- and destination-specific configuration, with destination configuration
 typically containing a number of required options. For more information on these options, check
 README files in the respective source and destination directories.
-
-## Deployment
-
-Currently, only bare-metal deployments are supported, with an expectation that the service will be
-served behind a reverse proxy (such as NGINX). The built-in HTTP server has no support for TLS
-termination and support for rate-limiting etc. is almost non-existent.
-
-In the future, we might provide a Docker/Podman-based container environment, but only a basic
-`Containerfile` exists at the moment. In addition, work is underway to provide integration
-Cloudflare Workers, via WASM.
 
 ## License
 
