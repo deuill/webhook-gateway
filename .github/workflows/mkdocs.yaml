@@ -26,4 +26,4 @@ jobs:
       - name: Build site with MKDocs
         run: |
           mkdir -p /tmp/dist/webhook-gateway
-          mkdocs build --strict --verbose --site-dir /tmp/dist/webhook-gateway
+          mkdocs build --strict --dirty --verbose --site-dir /tmp/dist/webhook-gateway
