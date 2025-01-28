@@ -18,7 +18,7 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install -y sshfs
-          pip install mkdocs-material
+          pip install mkdocs
       - name: Mount deployment directory with SSHFS
         run: |
           mkdir /tmp/dist
@@ -26,4 +26,4 @@ jobs:
       - name: Build site with MKDocs
         run: |
           mkdir -p /tmp/dist/webhook-gateway
-          mkdocs build --strict --dirty --verbose --site-dir /tmp/dist/webhook-gateway
+          mkdocs build --strict --verbose --site-dir /tmp/dist/webhook-gateway

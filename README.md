@@ -49,7 +49,9 @@ $ docker run --rm -v ./config.toml:/var/lib/webhook-gateway/config.toml docker.i
 Google Cloud Run provides a platform for running arbitrary containers with a generous [free
 tier][gcloud-run-pricing]; assuming you've already set up your Google Cloud account and have the
 `gcloud` command-line tools installed locally, you can deploy into Google Cloud Run via service
-definitions shipped here. First, set up a secret containing your entire `config.toml` file:
+definitions shipped here.
+
+First, set up a secret containing your entire `config.toml` file:
 
 ```sh
 $ gcloud secrets create webhook-gateway-config --data-file=config.toml
