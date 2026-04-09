@@ -26,12 +26,12 @@ func (cmd *Commands) Nick(name string) {
 func (cmd *Commands) Join(channels ...string) {
 	// We can join multiple channels at once, however we need to ensure that
 	// we are not exceeding the line length (see Client.MaxEventLength()).
-	max := cmd.c.MaxEventLength() - len(JOIN) - 1
+	maxLen := cmd.c.MaxEventLength() - len(JOIN) - 1
 
 	var buffer string
 
 	for i := 0; i < len(channels); i++ {
-		if len(buffer+","+channels[i]) > max {
+		if len(buffer+","+channels[i]) > maxLen {
 			cmd.c.Send(&Event{Command: JOIN, Params: []string{buffer}})
 			buffer = ""
 			continue
@@ -218,6 +218,19 @@ func (cmd *Commands) SendRawf(format string, a ...interface{}) error {
 	return cmd.SendRaw(fmt.Sprintf(format, a...))
 }
 
+// SendRawNoSplit sends a raw string directly to the server without any splitting
+// or length checking. Use with caution - this bypasses all safety checks.
+func (cmd *Commands) SendRawNoSplit(raw string) error {
+	event := ParseEvent(raw)
+	if event == nil {
+		return errors.New("invalid event: " + raw)
+	}
+
+	// Call write directly to bypass Send's splitting logic
+	cmd.c.write(event)
+	return nil
+}
+
 // Topic sets the topic of channel to message. Does not verify the length
 // of the topic.
 func (cmd *Commands) Topic(channel, message string) {
@@ -330,12 +343,12 @@ func (cmd *Commands) List(channels ...string) {
 
 	// We can LIST multiple channels at once, however we need to ensure that
 	// we are not exceeding the line length (see Client.MaxEventLength()).
-	max := cmd.c.MaxEventLength() - len(JOIN) - 1
+	maxLen := cmd.c.MaxEventLength() - len(JOIN) - 1
 
 	var buffer string
 
 	for i := 0; i < len(channels); i++ {
-		if len(buffer+","+channels[i]) > max {
+		if len(buffer+","+channels[i]) > maxLen {
 			cmd.c.Send(&Event{Command: LIST, Params: []string{buffer}})
 			buffer = ""
 			continue
