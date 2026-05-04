@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.23.0 — 2026-05-04
+
+### Security
+
+- roster: ignore roster pushes from unauthorized entities
+- carbons: ignore spoofed messages
+
+### Breaking
+
+- styling: individual tokens no longer contains their own Style, use Decoder's
+  `Style()` method instead
+
+### Fixed
+
+- muc: fix a race condition that could cause the loss of the nickname when
+  joining a channel as well as a bug where subsequent join requests would always
+  block forever (or until the provided timeout).
+- muc: fix a deadlock that could occur when leaving a channel.
+
+### Added
+
+- bin: package for sending and retrieving small snippets of binary data using
+  content identifier URLs
+- dial: respect "service not supported" SRV records and do not attempt to dial
+  fallback records if the server has indicated that they do not support a
+  specific service.
+- disco: implement HandleWithURI
+
+### Changed
+
+- dial: prioritize SRV-defined endpoints and non-TLS fallbacks
+
 
 ## v0.22.0 — 2024-09-23
 
@@ -108,6 +140,7 @@ All notable changes to this project will be documented in this file.
 
 
 ## v0.21.2 — 2022-04-07
+
 
 ### Added
 

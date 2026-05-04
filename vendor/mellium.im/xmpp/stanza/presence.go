@@ -95,9 +95,6 @@ func (p Presence) StartElement() xml.StartElement {
 }
 
 // Wrap wraps the payload in a stanza.
-//
-// If to is the zero value for jid.JID, no to attribute is set on the resulting
-// presence.
 func (p Presence) Wrap(payload xml.TokenReader) xml.TokenReader {
 	return xmlstream.Wrap(payload, p.StartElement())
 }
