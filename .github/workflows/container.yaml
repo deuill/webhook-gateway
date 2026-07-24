@@ -22,7 +22,7 @@ jobs:
           sudo apt-get install -y podman buildah
       - name: Build container image
         id: build-image
-        uses: redhat-actions/buildah-build@v2
+        uses: redhat-actions/buildah-build@v3
         with:
           image: ${{ env.CONTAINER_NAME }}
           tags: ${{ env.CONTAINER_TAG }}
